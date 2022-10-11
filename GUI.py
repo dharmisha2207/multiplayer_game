@@ -56,8 +56,8 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-            self.bunny1.x+=1
-            self.bunny2.x+=1
+            self.bunny1.increment()
+            self.bunny2.decrement()
             self.draw_window()
         pygame.quit()
 
