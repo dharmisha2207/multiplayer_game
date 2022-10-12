@@ -1,18 +1,21 @@
 import pygame
 import os
+import question
+pygame.font.init()
 
 class Bunny:
 
-    bunny_height=70
-    bunny_width=75
-
     def __init__(self, bunny_x, bunny_y):
+        self.bunny_height=70
+        self.bunny_width=75
         self.bunny = pygame.image.load(os.path.join('Assets','bunny.png'))
         self.bunny = pygame.transform.scale(self.bunny,(self.bunny_width,self.bunny_height))
         self.bunny_x = bunny_x
         self.bunny_y = bunny_y
         self.x=bunny_x
         self.y=bunny_y
+        self.step = 1
+        self.score = 0
     
     def get_bunny(self):
         return self.bunny
@@ -24,36 +27,54 @@ class Bunny:
         return self.y
     
     def left_increment(self, x, y):
-        if self.x + 1 > x and self.y + 1 < y:
-            return
-        if self.x + 1 > x:
-            self.y -= 1
-        else: 
-            self.x += 1
+        if self.score < 0:
+            self.score += 1
+        else:
+            if self.x + self.step > x-50 and self.y - self.step < y:
+                return
+            if self.x + self.step > x-50:
+                self.y -= self.step
+                self.score+=1
+            else: 
+                self.x += self.step
+                self.score+=1
+
     
     def right_increment(self, x, y):
-        if self.x - 1 < x and self.y + 1 < y:
-            return
-        if self.x - 1 < x:
-            self.y -= 1
+        if self.score < 0:
+            self.score += 1
         else:
-            self.x -= 1
+            if self.x - self.step < x+50 and self.y - self.step < y:
+                return
+            if self.x - self.step < x+50:
+                self.y -= self.step
+                self.score+=1
+            else:
+                self.x -= self.step
+                self.score+=1
 
     def left_decrement(self, x, y):
-        if self.x - 1 < self.bunny_x and self.y + 1 < self.bunny_y:
-            return
-        if self.y + 1 < self.bunny_y:
-            self.y += 1
-        elif self.x - 1 > self.bunny_x: 
-            self.x -= 1
+        if self.x - self.step < self.bunny_x and self.y + self.step < self.bunny_y:
+            self.score-=1
+        if self.y + self.step < self.bunny_y:
+            self.y += self.step
+            self.score-=1
+        elif self.x - self.step > self.bunny_x: 
+            self.x -= self.step
+            self.score-=1
     
     def right_decrement(self, x, y):
-        if self.x + 1 > self.bunny_x and self.y + 1 > self.bunny_y:
-            return
-        if self.y + 1 < self.bunny_y:
-            self.y += 1
-        elif self.x + 1 < self.bunny_x: 
-            self.x += 1
+        if self.x + self.step > self.bunny_x and self.y + 1 > self.bunny_y:
+            self.score-=1
+        if self.y + self.step < self.bunny_y:
+            self.y += self.step
+            self.score-=1
+        elif self.x + self.step < self.bunny_x: 
+            self.x += self.step
+            self.score-=1
+    
+    def get_score(self):
+        return self.score
 
 
 class Game:
@@ -63,17 +84,29 @@ class Game:
         self.height = height
         self.bunny1 = Bunny(100,600)
         self.bunny2 = Bunny(800,600)
-        self.carrot_x = 400
+        self.carrot_x = 450
         self.carrot_y = 200
         self.bg = pygame.image.load(os.path.join('Assets','bg.jpeg'))
         self.bg = pygame.transform.scale(self.bg,(width,height))
         self.carrot = pygame.image.load(os.path.join('Assets','carrot.png'))
         self.carrot = pygame.transform.scale(self.carrot,(100,100))
         self.win = pygame.display.set_mode((width,height))
+        self.font = pygame.font.SysFont('comicsans', 30)
+        self.quesgen = question.Question()
+        
 
     def draw_window(self):
         pygame.display.set_caption("Reach the Goal")
         self.win.blit(self.bg, (0,0))
+
+        self.player1score = self.font.render("Score : " + str(self.bunny1.get_score()), 1,(255,255,255))
+        self.player2score = self.font.render("Score : " + str(self.bunny2.get_score()), 1,(255,255,255))
+        self.win.blit(self.player1score, (100,100))
+        self.win.blit(self.player2score, (800,100))
+
+        self.ques = self.font.render(self.quesgen.generate_ques(),1, (255,255,255))
+        self.win.blit(self.ques, (450,100))
+
         self.win.blit(self.bunny1.get_bunny(),(self.bunny1.get_x(), self.bunny1.get_y()))
         self.win.blit(self.bunny2.get_bunny(),(self.bunny2.get_x(), self.bunny2.get_y()))
         self.win.blit(self.carrot,(self.carrot_x,self.carrot_y))
