@@ -93,6 +93,12 @@ class Game:
         self.win = pygame.display.set_mode((width,height))
         self.font = pygame.font.SysFont('comicsans', 30)
         self.quesgen = question.Question()
+        self.pathx1 = pygame.Rect(100, 650, 370, 20)
+        self.pathx2 = pygame.Rect(520, 650, 350, 20)
+        self.pathy1 = pygame.Rect(450, 250, 20, 400)
+        self.pathy2 = pygame.Rect(520, 250, 20, 400)
+       
+
         
 
     def draw_window(self):
@@ -106,6 +112,11 @@ class Game:
 
         self.ques = self.font.render(self.quesgen.generate_ques(),1, (255,255,255))
         self.win.blit(self.ques, (450,100))
+
+        pygame.draw.rect(self.win, (255,255,255), self.pathx1)
+        pygame.draw.rect(self.win, (255,255,255), self.pathx2)
+        pygame.draw.rect(self.win, (255,255,255), self.pathy1)
+        pygame.draw.rect(self.win, (255,255,255), self.pathy2)
 
         self.win.blit(self.bunny1.get_bunny(),(self.bunny1.get_x(), self.bunny1.get_y()))
         self.win.blit(self.bunny2.get_bunny(),(self.bunny2.get_x(), self.bunny2.get_y()))
