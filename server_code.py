@@ -1,6 +1,6 @@
 import socket
 from _thread import *
-import Game_World
+import GUI
 import Random_Arithmetic_question
 
 class Server:
