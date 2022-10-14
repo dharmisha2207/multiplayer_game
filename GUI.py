@@ -32,6 +32,7 @@ class GUI:
         self.wrong_sound = pygame.mixer.Sound(os.path.join('Assets','wrong.mp3'))
         self.hop = pygame.mixer.Sound(os.path.join('Assets','hop.mp3'))
         self.winner = pygame.mixer.Sound(os.path.join('Assets','win.mp3'))
+        self.run = False
         
        
 
@@ -87,12 +88,31 @@ class GUI:
         pygame.time.delay(5000)
         pygame.quit()
 
-    def run(self):
-        run = True
-        while run:
+    def waiting_win(self):
+        pygame.display.set_caption("Reach the Goal")
+        self.win.blit(self.bg, (0,0))
+        font = pygame.font.SysFont('comicsans', 70)
+        waiting = font.render("Please wait for the opponent!", 1, (255,255,255))
+        self.win.blit(waiting,(self.width/2-waiting.get_width()/2, self.height/2-waiting.get_height()/2))
+        pygame.display.update()
+    
+    def toggle_run(self):
+        if self.run==True:
+            self.run=False
+        self.run=True
+
+    def draw_waiting(self):
+        while not(self.run):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
+                    self.run = True
+            self.waiting_win()
+
+    def play(self):
+        while self.run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.run = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_BACKSPACE:
                         self.answer = self.answer[:-1]
