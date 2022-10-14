@@ -1,6 +1,6 @@
 import pygame
 import os
-import question
+import Random_Arithmetic_question
 import Player
 pygame.mixer.init()
 pygame.font.init()
@@ -20,7 +20,7 @@ class GUI:
         self.carrot = pygame.transform.scale(self.carrot,(100,150))
         self.win = pygame.display.set_mode((width,height))
         self.font = pygame.font.SysFont('comicsans', 30)
-        self.quesgen = question.Question()
+        self.quesgen = Random_Arithmetic_question.Question_Generator()
         self.ques = self.font.render(self.quesgen.generate_ques(),1, (255,255,255))
         self.pathx1 = pygame.Rect(100, 650, 360, 10)
         self.pathx2 = pygame.Rect(510, 650, 350, 10)
@@ -63,11 +63,13 @@ class GUI:
         self.bunny1.left_increment(self.carrot_x, self.carrot_y)
         self.hop.play()
         if self.bunny1.get_score()==13:
-            print("1 won")
             self.draw_winner("Bunny 1 won!!")
     
     def player2_inc(self):
         self.bunny2.right_increment(self.carrot_x, self.carrot_y)
+        self.hop.play()
+        if self.bunny1.get_score()==13:
+            self.draw_winner("Bunny 2 won!!")
     
     def player1_dec(self):
         self.bunny1.left_decrement(self.carrot_x, self.carrot_y)
@@ -76,7 +78,6 @@ class GUI:
         self.bunny2.right_decrement(self.carrot_x, self.carrot_y)
 
     def draw_winner(self,text):
-        print("draw")
         font = pygame.font.SysFont('comicsans', 100)
         winner = font.render(text, 1, (255,255,255))
         self.draw_window()
@@ -109,7 +110,6 @@ class GUI:
                             self.wrong_sound.play()
                             self.answer=''
                             self.update_text()
-     
             self.draw_window() 
         pygame.quit()
 
@@ -121,7 +121,7 @@ class GUI:
         return self.answer
     
     def update_ques(self):
-        self.quesgen = question.Question()
+        self.quesgen = Random_Arithmetic_question.Question_Generator()
         self.ques = self.font.render(self.quesgen.generate_ques(),1, (255,255,255))
         self.win.blit(self.ques, (450,100))
 
