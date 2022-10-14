@@ -2,6 +2,7 @@ import pygame
 import os
 import question
 import Player
+pygame.mixer.init()
 pygame.font.init()
 
 class GUI:
@@ -28,6 +29,10 @@ class GUI:
         self.answer = ''
         self.answer_rect = pygame.Rect(450,150,100,40)
         self.text_surface = self.font.render(self.answer,True,(0,0,0))
+        self.wrong_sound = pygame.mixer.Sound(os.path.join('Assets','wrong.mp3'))
+        self.hop = pygame.mixer.Sound(os.path.join('Assets','hop.mp3'))
+        self.winner = pygame.mixer.Sound(os.path.join('Assets','win.mp3'))
+        
        
 
     def draw_window(self):
@@ -56,6 +61,10 @@ class GUI:
 
     def player1_inc(self):
         self.bunny1.left_increment(self.carrot_x, self.carrot_y)
+        self.hop.play()
+        if self.bunny1.get_score()==13:
+            print("1 won")
+            self.draw_winner("Bunny 1 won!!")
     
     def player2_inc(self):
         self.bunny2.right_increment(self.carrot_x, self.carrot_y)
@@ -66,7 +75,16 @@ class GUI:
     def player2_dec(self):
         self.bunny2.right_decrement(self.carrot_x, self.carrot_y)
 
-
+    def draw_winner(self,text):
+        print("draw")
+        font = pygame.font.SysFont('comicsans', 100)
+        winner = font.render(text, 1, (255,255,255))
+        self.draw_window()
+        self.win.blit(winner,(self.width/2-winner.get_width()/2, self.height/2-winner.get_height()/2))
+        pygame.display.update()
+        self.winner.play()
+        pygame.time.delay(5000)
+        pygame.quit()
 
     def run(self):
         run = True
@@ -86,13 +104,12 @@ class GUI:
                             self.answer=''
                             self.update_text()
                             self.update_ques()
+                            self.player1_inc()
                         else:
+                            self.wrong_sound.play()
                             self.answer=''
                             self.update_text()
-
-
-            self.player1_inc()
-            self.player2_inc()       
+     
             self.draw_window() 
         pygame.quit()
 
