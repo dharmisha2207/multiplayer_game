@@ -7,7 +7,7 @@ pygame.font.init()
 
 class GUI:
 
-    def __init__ (self, width, height):
+    def __init__ (self, width, height,id):
         self.width = width
         self.height = height
         self.bunny1 = Player.Bunny(100,600)
@@ -33,15 +33,20 @@ class GUI:
         self.hop = pygame.mixer.Sound(os.path.join('Assets','hop.mp3'))
         self.winner = pygame.mixer.Sound(os.path.join('Assets','win.mp3'))
         self.run = False
+        self.id = id
         
        
 
     def draw_window(self):
         pygame.display.set_caption("Reach the Goal")
         self.win.blit(self.bg, (0,0))
+        if self.id == 1:
+            self.player1score = self.font.render("You : " + str(self.bunny1.get_score()), 1,(255,255,255))
+            self.player2score = self.font.render("Opponent : " + str(self.bunny2.get_score()), 1,(255,255,255))
+        else:
+            self.player1score = self.font.render("Opponent : " + str(self.bunny1.get_score()), 1,(255,255,255))
+            self.player2score = self.font.render("You : " + str(self.bunny2.get_score()), 1,(255,255,255))
 
-        self.player1score = self.font.render("Score : " + str(self.bunny1.get_score()), 1,(255,255,255))
-        self.player2score = self.font.render("Score : " + str(self.bunny2.get_score()), 1,(255,255,255))
         self.win.blit(self.player1score, (100,100))
         self.win.blit(self.player2score, (800,100))
 
@@ -69,7 +74,7 @@ class GUI:
     def player2_inc(self):
         self.bunny2.right_increment(self.carrot_x, self.carrot_y)
         self.hop.play()
-        if self.bunny1.get_score()==13:
+        if self.bunny2.get_score()==13:
             self.draw_winner("Bunny 2 won!!")
     
     def player1_dec(self):
@@ -125,7 +130,7 @@ class GUI:
                             self.answer=''
                             self.update_text()
                             self.update_ques()
-                            self.player1_inc()
+                            self.player2_inc()
                         else:
                             self.wrong_sound.play()
                             self.answer=''
