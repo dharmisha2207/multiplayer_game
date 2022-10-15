@@ -53,34 +53,36 @@ class client:
             self.game.draw_window()
             sleep(2)
 
-    def draw_wait(self):
-        while not self.run:
-            self.game.draw_waiting()
-            sleep(2)
+
+    def arrival(self):
+        print("Checking if opponent has arrived")
+        msg = self.net.receive()
+        if msg == "Arrived":
+            print("Everyone Arrived")
+        else:
+            print("Error")
+            exit(-1)
 
     def driver_code(self):
 
-        if(self.id==1):
-            #Wait indefinitely till server informs of arrival of all participants
-            drawing_wait = threading.Thread(target=self.draw_wait(), args=(),daemon=True)
-            drawing_wait.start()
 
-            print("Checking if opponent has arrived")
-            msg=self.net.receive()
-            if msg=="Arrived":
-                print("Everyone Arrived")
-            else:
-                print("Error")
-                exit(-1)
+        arrival = threading.Thread(target=self.arrival)
+        arrival.start()
+
+        if (self.id == 1):
+            # Wait indefinitely till server informs of arrival of all participants
+            while not self.run:
+                self.game.draw_waiting()
+                sleep(1)
 
         self.game.toggle_run()
         self.run=True
 
         #Draw Game world
         if self.id==1:
-            drawing_wait.join()
+            arrival.join()
 
-        drawing_thread = threading.Thread(target=self.draw_GUI(), args=(),daemon=True)
+        drawing_thread = threading.Thread(target=self.draw_GUI, args=())
         drawing_thread.start()
 
         while True:
@@ -93,7 +95,7 @@ class client:
             self.game.update_ques(question)
 
             #waiting indefinitely for server to announce winner
-            winner_announce = threading.Thread(target=self.winner_receive(), args=())
+            winner_announce = threading.Thread(target=self.winner_receive, args=())
             winner_announce.start()
 
             #while answer is wrong
